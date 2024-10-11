@@ -1,5 +1,7 @@
-package br.com.ikematsu.exceptions
+package br.com.ikematsu.exceptions.handler
 
+import br.com.ikematsu.exceptions.ExceptionResponse
+import br.com.ikematsu.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.util.*
-import kotlin.Exception
 
 @ControllerAdvice
 @RestController
@@ -25,7 +26,7 @@ class CustomizedResponseEntityExceptionHandler : ResponseEntityExceptionHandler(
         return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @ExceptionHandler(UnsupportedMathOperationException::class)
+    @ExceptionHandler(ResourceNotFoundException::class)
     fun handleBadRequestExceptions(ex: Exception, request: WebRequest) :
             ResponseEntity<ExceptionResponse> {
         val exceptionResponse = ExceptionResponse(
@@ -33,6 +34,6 @@ class CustomizedResponseEntityExceptionHandler : ResponseEntityExceptionHandler(
             ex.message,
             request.getDescription(false)
         )
-        return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST)
+        return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_FOUND)
     }
 }
